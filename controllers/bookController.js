@@ -190,7 +190,7 @@ exports.book_delete_post = function(req, res, next) {
 
     async.parallel({
         book: function(callback) {
-          Book.findById(req.body.authorid).exec(callback)
+          Book.findById(req.body.bookid).exec(callback)
         },
         book_instances: function(callback) {
           BookInstance.find({ 'book': req.body.bookid }).exec(callback)
@@ -199,13 +199,13 @@ exports.book_delete_post = function(req, res, next) {
         if (err) { return next(err); }
         // Success
         if (results.book_instances.length > 0) {
-            // Book has instances. Render in same way as for GET route.
-            res.render('book_delete', { title: 'Delete Book', book: results.book, book_instances: results.book_instances } );
+            // Author has books. Render in same way as for GET route.
+            res.render('book_delete', { title: 'Book Author', book: results.book, book_instances: results.book_instances } );
             return;
         }
         else {
-            // Book has no instances. Delete object and redirect to the list of books.
-            Book.findByIdAndRemove(req.body.authorid, function deleteBook(err) {
+            // Author has no books. Delete object and redirect to the list of authors.
+            Book.findByIdAndRemove(req.body.bookid, function deleteBook(err) {
                 if (err) { return next(err); }
                 // Success - go to author list
                 res.redirect('/catalog/books')

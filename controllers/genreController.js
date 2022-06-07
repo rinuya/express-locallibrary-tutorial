@@ -150,21 +150,20 @@ exports.genre_delete_post = function(req, res, next) {
 
 // Display Genre update form on GET.
 exports.genre_update_get = function(req, res) {
-    async.parallel({
-        genre: function(callback){
-            Genre.findById(req.params.id).exec(callback)
-        }
-    }, function(err, results){
-        if (err) {return next(err); }
-        if (results.genre==null) {//no results found
-            var err = new Error("Genre not found");
-            err.status= 404;
+  async.parallel({
+    genre: function(callback) {
+        Genre.findById(req.params.id).exec(callback);
+    },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.genre==null) { // No results.
+            var err = new Error('Genre not found');
+            err.status = 404;
             return next(err);
         }
-        //Success
-        res.render("genre_form", {title: "Update Genre", genre: results.genre})
-    })
-    
+        // Success.
+        res.render('genre_form', { title: 'Update Genre', genre: results.genre });
+    });
 };
 
 // Handle Genre update on POST.

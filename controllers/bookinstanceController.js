@@ -112,7 +112,22 @@ exports.bookinstance_delete_get = function(req, res) {
 
 // Handle BookInstance delete on POST. //NEXT STEP
 exports.bookinstance_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: BookInstance delete POST');
+    async.parallel({
+        bookinstance: function(callback) {
+            BookInstance.findById(req.params.id).populate("book").exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.bookinstance==null) { // No results.
+            res.redirect('/catalog/bookinstances');
+            
+        }
+        // Successful, so render.
+        BookInstance.findByIdAndRemove(req.body.bookinstanceid, function deleteBookinstance(err){
+            if (err) { return next(err); }
+        })
+        res.redirect('/catalog/books')
+    });
 };
 
 // Display BookInstance update form on GET.
