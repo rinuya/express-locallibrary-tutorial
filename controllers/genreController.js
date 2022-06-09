@@ -203,6 +203,4 @@ exports.genre_update_post = [
                // Successful - redirect to book detail page.
                res.redirect(thegenre.url);
             });
-    }
-}
-]
+    }}]
