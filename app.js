@@ -4,15 +4,21 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+var helmet = require('helmet');
+
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var catalogRouter = require('./routes/catalog');  //Import routes for "catalog" area of site
+var compression = require('compression');
 
 var app = express();
+app.use(helmet());
 
 //Connecting to database
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb+srv://rinuya:3I6ivWsIukCdXeDy@locallibrarytut-main.ingu4.mongodb.net/?retryWrites=true&w=majority';
+var dev_db_url = 'mongodb+srv://rinuya:3I6ivWsIukCdXeDy@locallibrarytut-main.ingu4.mongodb.net/local_library?retryWrites=true'
+var mongoDB = process.env.MONGODB_URI || dev_db_url;
+
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -25,6 +31,8 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(compression()); //Compress all routes
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Heres where we d include more paths 
